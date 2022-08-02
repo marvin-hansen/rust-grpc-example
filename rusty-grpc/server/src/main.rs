@@ -26,7 +26,7 @@ impl Voting for VotingService {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let address = "[::1]:8080".parse().unwrap();
+    let address = "127.0.0.1:8080".parse().unwrap();
     let voting_service = VotingService::default();
     println!("Running voting service");
     Server::builder().add_service(VotingServer::new(voting_service))
