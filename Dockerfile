@@ -25,7 +25,8 @@ ADD . .
 WORKDIR rusty-grpc/server
 RUN cargo build --release
 
-FROM gcr.io/distroless/cc
+#FROM gcr.io/distroless/cc
+FROM debian:bullseye-slim
 COPY --from=builder /rusty-grpc/server/target/release/server /
 EXPOSE 8080
 CMD ["./server"]
