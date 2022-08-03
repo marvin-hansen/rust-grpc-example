@@ -8,7 +8,9 @@ pub mod voting {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut client = VotingClient::connect("http://[::1]:8080").await?;
+
+    let mut client = VotingClient::connect("http://127.0.01:8080").await?;
+
     loop {
         println!("\nPlease vote for a particular url");
         let mut u = String::new();
@@ -16,6 +18,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Please provide a url: ");
         stdin().read_line(&mut u).unwrap();
         let u = u.trim();
+
         println!("Please vote (d)own or (u)p: ");
         stdin().read_line(&mut vote).unwrap();
         let v = match vote.trim().to_lowercase().chars().next().unwrap() {
@@ -23,6 +26,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             'd' => 1,
             _ => break,
         };
+
         // here comes the service invocation
         let request = tonic::Request::new(VotingRequest {
             url: String::from(u),
