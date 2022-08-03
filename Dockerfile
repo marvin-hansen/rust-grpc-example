@@ -20,13 +20,24 @@ RUN chmod +x protoc/bin/protoc
 RUN cp protoc/bin/protoc /usr/bin
 RUN cp -R protoc/include/* /usr/include
 
+FROM base as planner
+ADD . .
+WORKDIR rusty-grpc/server
+RUN cargo chef prepare  --recipe-path recipe.json
+
+FROM base as cacher
+WORKDIR rusty-grpc/server
+COPY --from=planner /rusty-grpc/server/recipe.json recipe.json
+RUN cargo chef cook --release --recipe-path recipe.json
+
 FROM base as builder
 ADD . .
 WORKDIR rusty-grpc/server
+COPY --from=cacher /rusty-grpc/server/target target
+COPY --from=cacher $CARGO_HOME $CARGO_HOME
 RUN cargo build --release
 
-#FROM gcr.io/distroless/cc
-FROM debian:bullseye-slim
+FROM gcr.io/distroless/cc
 COPY --from=builder /rusty-grpc/server/target/release/server /
 EXPOSE 8080
 CMD ["./server"]

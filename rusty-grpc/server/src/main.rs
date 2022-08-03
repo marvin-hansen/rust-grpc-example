@@ -30,7 +30,7 @@ impl Voting for VotingService {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let server_details = "127.0.0.1:8080";
+    let server_details = "0.0.0.0:8080";
     let address: SocketAddr = server_details.parse().expect("Unable to parse socket address");
 
     let voting_service = VotingService::default();
